@@ -49,6 +49,25 @@ body.adv .adv-only  { display: block; }
 .explain-easy  { background: #efffef; border-left: 4px solid var(--green); }
 .explain-adv   { background: #eef3ff; border-left: 4px solid var(--blue); }
 .explain-warn  { background: #fffbea; border-left: 4px solid var(--yellow); }
+/* Dark-Mode: helle Boxen behalten hellen Hintergrund → Text muss schwarz bleiben */
+body.dark .explain-box,
+body.dark .explain-box * { color: #0f172a; }
+body.dark .explain-box strong { opacity: .75; }
+
+/* ── Dark-Mode Sichtbarkeits-Fixes ── */
+/* Mini-Quiz Buttons: heller Hover/Correct/Wrong-Hintergrund → dunkler Text */
+body.dark .mq-btn:hover { background: #eef3ff; color: #0f172a; }
+body.dark .mq-btn.correct { background: #d1fae5; color: #064e3b; }
+body.dark .mq-btn.wrong   { background: #fee2e2; color: #7f1d1d; }
+/* Spickzettel-Formel: nutzt var(--bg) → im Darkmode dunkel, daher heller Text */
+body.dark .cheat-formula { color: #e5e7eb; background: #0f172a; }
+/* Tabellen-Zebrastreifen lesbar halten */
+body.dark .data-table td { color: var(--text); }
+/* Calc-Ergebnis (heller Hintergrund via var(--bg) ist dunkel im Darkmode → Text passt) */
+body.dark .calc-result { color: var(--text); }
+body.dark .calc-result small { color: var(--muted); }
+/* Confirm-No Button im Progress-Bereich */
+body.dark .s10-confirm-no { color: #0f172a; }
 .explain-box strong { display: block; margin-bottom: .4rem; font-size: .78rem;
   text-transform: uppercase; letter-spacing: .06em; opacity: .65; }
 
@@ -165,7 +184,7 @@ body.adv .adv-only  { display: block; }
    <button onclick="go('imprint')">Impressum</button>
   </div>
   <div class="nav-right">
-   <button onclick="document.body.classList.toggle('dark')" aria-label="Dark Mode">🌙</button>
+   <button onclick="window.S10 && S10.toggleDark()" aria-label="Dark Mode">🌙</button>
    <button class="hamburger" onclick="toggleMenu()" aria-label="Menü"><span></span><span></span><span></span></button>
   </div>
  </div>
@@ -904,7 +923,7 @@ body.adv .adv-only  { display: block; }
   </div>
   <div class="imprint-card">
     <h2>Haftungsausschluss</h2>
-    <p style="font-size:15px;line-height:1.7;color:#334155">Diese Website wurde im Rahmen eines Schulprojektes der 10. Klasse erstellt. Die Inhalte wurden mithilfe von KI generiert und anschließend von den Autoren geprüft und angepasst. Für die vollständige inhaltliche Richtigkeit wird keine Gewähr übernommen.</p>
+    <p style="font-size:15px;line-height:1.7;color:var(--text)">Diese Website wurde im Rahmen eines Schulprojektes der 10. Klasse erstellt. Die Inhalte wurden mithilfe von KI generiert und anschließend von den Autoren geprüft und angepasst. Für die vollständige inhaltliche Richtigkeit wird keine Gewähr übernommen.</p>
     <p style="font-size:14px;color:var(--muted);margin-top:1rem">Bearbeitet durch Daris Beckovic &amp; Gabrijel Guzmic · Datum: 16.04.2026</p>
   </div>
 </div>
@@ -1149,6 +1168,7 @@ const quizF = $('quizF');
 function quizAns(u) {
   const correct = u === quiz[qi].a;
   if (correct) quizScore++;
+  if (window.S10) S10.trackQuiz(correct);
   quizF.textContent = correct ? `✅ Richtig! (${quizScore}/${quiz.length} gesamt)` : `❌ Falsch – Richtig wäre: ${quiz[qi].a ? 'Richtig' : 'Falsch'}`;
   quizF.style.color = correct ? 'var(--green)' : 'var(--red)';
   qi = (qi + 1) % quiz.length;
@@ -1257,7 +1277,193 @@ function endChallenge() {
   const note = pct >= 87 ? '🏆 Sehr gut!' : pct >= 75 ? '👍 Gut!' : pct >= 50 ? '😐 Befriedigend' : '📚 Weiter üben!';
   $('ch-score-title').textContent = `${note} ${chPunkte} von max. ${max} Punkten`;
   $('ch-score-text').textContent = `Das entspricht ca. ${pct}% – ${pct >= 50 ? 'bestanden ✅' : 'nicht bestanden ❌'}`;
+  if (window.S10) S10.trackChallenge(chPunkte, max);
 }
+</script>
+
+<!-- ===== Cookie Banner, Welcome Alert & Fortschritts-Tracking ===== -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
+<style>
+.s10-overlay{position:fixed;inset:0;background:rgba(15,23,42,.55);display:flex;align-items:center;justify-content:center;z-index:9999;padding:1rem;animation:s10fade .25s;backdrop-filter:blur(4px)}
+.s10-modal{background:var(--surface);color:var(--text);border-radius:20px;max-width:460px;width:100%;padding:2.2rem;box-shadow:0 25px 70px rgba(0,0,0,.35);text-align:center}
+.s10-modal h2{margin:0 0 .6rem;font-family:'Syne',sans-serif;color:var(--blue);font-size:1.6rem}
+.s10-modal p{margin:.4rem 0 1.4rem;color:var(--muted);line-height:1.6;font-family:'Plus Jakarta Sans',sans-serif}
+.s10-banner{position:fixed;left:1rem;right:1rem;bottom:1rem;background:var(--surface);border:1.5px solid var(--border);border-radius:16px;padding:1.1rem 1.3rem;box-shadow:0 12px 40px rgba(0,0,0,.18);display:flex;flex-wrap:wrap;align-items:center;gap:1rem;z-index:9998;max-width:720px;margin:auto;animation:s10slide .35s}
+.s10-banner p{margin:0;flex:1 1 260px;font-size:.92rem;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif}
+.s10-banner .btns{display:flex;gap:.5rem;flex-wrap:wrap}
+
+/* ─── Lernfortschritt-Karte ─── */
+.s10-progress-card{
+  background:linear-gradient(135deg,#1a56db 0%,#2563eb 50%,#0d9d58 100%);
+  color:#fff;border-radius:20px;padding:1.8rem 2rem;margin-bottom:1.7rem;
+  box-shadow:0 12px 40px rgba(26,86,219,.25);
+  font-family:'Plus Jakarta Sans',-apple-system,sans-serif;
+  position:relative;overflow:hidden;
+}
+.s10-progress-card::before{
+  content:'';position:absolute;top:-50%;right:-20%;width:300px;height:300px;
+  background:radial-gradient(circle,rgba(255,255,255,.12) 0%,transparent 70%);
+  pointer-events:none;
+}
+.s10-progress-card h3{
+  margin:0 0 1.2rem;font-family:'Syne',sans-serif;font-weight:800;
+  font-size:1.5rem;letter-spacing:-.01em;display:flex;align-items:center;gap:.5rem;
+}
+.s10-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.8rem;position:relative}
+.s10-stat{
+  background:rgba(255,255,255,.15);backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,.2);
+  border-radius:14px;padding:1rem .8rem;text-align:center;
+  transition:transform .2s;
+}
+.s10-stat:hover{transform:translateY(-2px);background:rgba(255,255,255,.22)}
+.s10-stat b{
+  display:block;font-size:1.9rem;font-family:'JetBrains Mono',monospace;
+  font-weight:700;letter-spacing:-.02em;line-height:1.1;margin-bottom:.2rem;
+}
+.s10-stat span{
+  font-size:.78rem;font-weight:600;opacity:.92;
+  text-transform:uppercase;letter-spacing:.04em;
+}
+.s10-reset{
+  background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.25);
+  color:#fff;padding:.55rem 1.1rem;border-radius:10px;cursor:pointer;
+  font-size:.85rem;font-weight:600;margin-top:1.1rem;
+  font-family:'Plus Jakarta Sans',sans-serif;transition:all .2s;
+}
+.s10-reset:hover{background:rgba(255,255,255,.28)}
+
+/* ─── Inline-Bestätigung ─── */
+.s10-confirm{
+  margin-top:1rem;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.3);
+  border-radius:12px;padding:1rem 1.1rem;animation:s10slide .25s;
+}
+.s10-confirm p{margin:0 0 .8rem;font-size:.92rem;font-weight:600}
+.s10-confirm-btns{display:flex;gap:.5rem;flex-wrap:wrap}
+.s10-confirm-btns button{
+  border:none;padding:.5rem 1.1rem;border-radius:8px;cursor:pointer;
+  font-weight:700;font-size:.85rem;font-family:'Plus Jakarta Sans',sans-serif;
+}
+.s10-confirm-yes{background:#dc2626;color:#fff}
+.s10-confirm-no{background:rgba(255,255,255,.85);color:#0f172a}
+
+@keyframes s10fade{from{opacity:0}to{opacity:1}}
+@keyframes s10slide{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}
+</style>
+
+<script>
+(function(){
+  const KEY='s10_consent', PROG='s10_progress', DARK='s10_dark';
+  const def={quizCorrect:0,quizTotal:0,challenges:0,bestPct:0,visits:0,lastVisit:null};
+
+  function setCookie(n,v,days){
+    const d=new Date();d.setTime(d.getTime()+days*864e5);
+    document.cookie=n+'='+encodeURIComponent(v)+';expires='+d.toUTCString()+';path=/;SameSite=Lax';
+  }
+  function getCookie(n){
+    return document.cookie.split('; ').reduce((r,c)=>{const[k,v]=c.split('=');return k===n?decodeURIComponent(v||''):r},'');
+  }
+
+  // ── Dark Mode beim Laden anwenden ──
+  if(getCookie(DARK)==='1') document.body.classList.add('dark');
+
+  function loadProg(){
+    try{return Object.assign({},def,JSON.parse(localStorage.getItem(PROG)||'{}'))}catch(e){return {...def}}
+  }
+  function saveProg(p){
+    if(getCookie(KEY)==='accepted'){
+      localStorage.setItem(PROG,JSON.stringify(p));
+      setCookie('s10_last_visit',new Date().toISOString(),365);
+    }
+  }
+
+  window.S10={
+    trackQuiz(ok){const p=loadProg();p.quizTotal++;if(ok)p.quizCorrect++;saveProg(p);renderProgress()},
+    trackChallenge(pkt,max){const p=loadProg();p.challenges++;const pct=Math.round(pkt/max*100);if(pct>p.bestPct)p.bestPct=pct;saveProg(p);renderProgress()},
+    askReset(){
+      const card=document.getElementById('s10-progress');if(!card)return;
+      if(card.querySelector('.s10-confirm'))return;
+      const c=document.createElement('div');c.className='s10-confirm';
+      c.innerHTML=`<p>⚠️ Lernfortschritt wirklich löschen?</p>
+        <div class="s10-confirm-btns">
+          <button class="s10-confirm-yes" onclick="S10.doReset()">Ja, löschen</button>
+          <button class="s10-confirm-no" onclick="S10.cancelReset()">Abbrechen</button>
+        </div>`;
+      card.appendChild(c);
+    },
+    cancelReset(){const c=document.querySelector('.s10-confirm');if(c)c.remove()},
+    doReset(){localStorage.removeItem(PROG);renderProgress()},
+    toggleDark(){
+      const on=document.body.classList.toggle('dark');
+      // Dark Mode nur bei Consent persistent speichern, sonst Session-only
+      if(getCookie(KEY)==='accepted') setCookie(DARK,on?'1':'0',365);
+      else setCookie(DARK,on?'1':'0',1);
+    }
+  };
+
+  function renderProgress(){
+    const home=document.getElementById('home');if(!home)return;
+    let card=document.getElementById('s10-progress');
+    if(getCookie(KEY)!=='accepted'){if(card)card.remove();return}
+    const p=loadProg();
+    if(!card){
+      card=document.createElement('div');card.id='s10-progress';card.className='s10-progress-card';
+      home.insertBefore(card,home.firstChild.nextSibling||null);
+    }
+    const acc=p.quizTotal?Math.round(p.quizCorrect/p.quizTotal*100):0;
+    card.innerHTML=`<h3>📈 Dein Lernfortschritt</h3>
+      <div class="s10-stats">
+        <div class="s10-stat"><b>${p.quizTotal}</b><span>Quiz-Fragen</span></div>
+        <div class="s10-stat"><b>${acc}%</b><span>Trefferquote</span></div>
+        <div class="s10-stat"><b>${p.challenges}</b><span>Challenges</span></div>
+        <div class="s10-stat"><b>${p.bestPct}%</b><span>Bestleistung</span></div>
+      </div>
+      <button class="s10-reset" onclick="S10.askReset()">🗑️ Fortschritt zurücksetzen</button>`;
+  }
+
+  function showWelcome(){
+    if(sessionStorage.getItem('s10_welcomed'))return;
+    sessionStorage.setItem('s10_welcomed','1');
+    const o=document.createElement('div');o.className='s10-overlay';
+    o.innerHTML=`<div class="s10-modal" role="dialog" aria-modal="true">
+      <h2>👋 Willkommen!</h2>
+      <p>Danke, dass du <strong>Statistik 10</strong> benutzt!<br>Wir freuen uns, dich bei deinen Problemen zu unterstützen. Viel Erfolg beim Lernen! 🎓</p>
+      <button class="btn" onclick="this.closest('.s10-overlay').remove()">Los geht's 🚀</button>
+    </div>`;
+    document.body.appendChild(o);
+  }
+
+  function showBanner(){
+    if(getCookie(KEY))return;
+    const b=document.createElement('div');b.className='s10-banner';b.id='s10-banner';
+    b.innerHTML=`<p>🍪 Wir verwenden Cookies & lokalen Speicher, um deinen <strong>Lernfortschritt</strong> und deine <strong>Dark-Mode-Einstellung</strong> zu sichern. Keine Werbung, keine Drittanbieter.</p>
+      <div class="btns">
+        <button class="btn alt" onclick="window.__s10c('declined')">Ablehnen</button>
+        <button class="btn" onclick="window.__s10c('accepted')">Akzeptieren</button>
+      </div>`;
+    document.body.appendChild(b);
+  }
+
+  window.__s10c=function(v){
+    setCookie(KEY,v,365);
+    const b=document.getElementById('s10-banner');if(b)b.remove();
+    if(v==='accepted'){
+      const p=loadProg();p.visits++;p.lastVisit=new Date().toISOString();saveProg(p);
+      // Dark Mode jetzt persistent speichern
+      setCookie(DARK,document.body.classList.contains('dark')?'1':'0',365);
+    }
+    renderProgress();
+  };
+
+  document.addEventListener('DOMContentLoaded',()=>{
+    if(getCookie(KEY)==='accepted'){
+      const p=loadProg();p.visits++;p.lastVisit=new Date().toISOString();saveProg(p);
+    }
+    renderProgress();
+    setTimeout(showWelcome,300);
+    setTimeout(showBanner,1200);
+  });
+})();
 </script>
 </body>
 </html>
