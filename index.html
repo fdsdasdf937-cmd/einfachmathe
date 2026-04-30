@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Statistik 10 – MEGA Lernplattform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@800&family=DM+Sans:wght@400;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Syne:wght@800&family=DM+Sans:wght@400;600&display=swap" rel="stylesheet"></noscript>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+ <div class="nav">
+  <div class="logo">📊 Statistik 10</div>
+  <div class="nav-links">
+   <button onclick="go('home')" class="active">Start</button>
+   <button onclick="go('grundlagen')">Grundlagen</button>
+   <button onclick="go('lernen')">Lernen</button>
+   <button onclick="go('simulation')">Simulationen</button>
+   <button onclick="go('rechnen')">Rechenaufgaben</button>
+   <button onclick="go('quiz')">Quiz</button>
+   <button onclick="go('challenge')">Challenge</button>
+  </div>
+  <div class="nav-right">
+   <button onclick="document.body.classList.toggle('dark')" aria-label="Dark Mode">🌙</button>
+   <button class="hamburger" onclick="toggleMenu()" aria-label="Menü"><span></span><span></span><span></span></button>
+  </div>
+ </div>
+ <div class="mobile-menu" id="mobileMenu">
+  <button onclick="goMobile('home')">🏠 Start</button>
+  <button onclick="goMobile('grundlagen')">📖 Grundlagen</button>
+  <button onclick="goMobile('lernen')">📘 Lernen</button>
+  <button onclick="goMobile('simulation')">🎲 Simulationen</button>
+  <button onclick="goMobile('rechnen')">🧮 Rechenaufgaben</button>
+  <button onclick="goMobile('quiz')">🧠 Quiz</button>
+  <button onclick="goMobile('challenge')">🔥 Challenge</button>
+ </div>
+</header>
+
+<div id="home" class="page active">
+ <div class="card">
+  <h1>Willkommen zur MEGA‑Statistik‑Lernplattform</h1>
+  <p>Diese Website ist eine <b>extrem umfangreiche Lernplattform</b> für Statistik & Wahrscheinlichkeit (10. Klasse).
+     Sie kombiniert <b>Erklärungen, Simulationen, Rechenaufgaben, Quiz, Challenges und Fortschrittssysteme</b> – alles in <b>einer Datei</b>.</p>
+ </div>
+ <div class="grid">
+  <div class="card card-link" onclick="go('lernen', this)"><h3>📘 Lernen</h3><p>Theorie verständlich erklärt</p></div>
+  <div class="card card-link" onclick="go('rechnen', this)"><h3>🧮 Rechnen</h3><p>Sehr viele zufällige Aufgaben</p></div>
+  <div class="card card-link" onclick="go('simulation', this)"><h3>🎲 Simulation</h3><p>Experimente live erleben</p></div>
+  <div class="card card-link" onclick="go('quiz', this)"><h3>🧠 Quiz</h3><p>Wissen testen</p></div>
+ </div>
+</div>
+
+<div id="grundlagen" class="page">
+ <div class="card"><h2>Was ist Statistik?</h2><p>Statistik beschäftigt sich mit dem Sammeln, Ordnen, Darstellen und Auswerten von Daten.</p></div>
+ <div class="card"><h2>Absolute & relative Häufigkeit</h2><p>Absolute Häufigkeit = Anzahl eines Ergebnisses<br>Relative Häufigkeit = Anteil an allen Versuchen</p></div>
+</div>
+
+<div id="lernen" class="page">
+ <div class="card"><h2>Mittelwert‑Rechner</h2><input id="calcData" style="width:100%" placeholder="z.B. 2,3,1,4,2"><br><br><button class="btn" onclick="calcStats()">Berechnen</button><div id="calcOut"></div></div>
+ <div class="card"><h2>Median‑Erklärung</h2><p>Der Median ist der mittlere Wert einer sortierten Datenreihe.</p></div>
+</div>
+
+<div id="simulation" class="page">
+ <div class="card"><h2>🎲 Würfel‑Simulation (1000 Würfe)</h2><button class="btn" onclick="simDice()">Start</button><canvas id="dice" width="520" height="240" style="max-width:100%;display:block"></canvas></div>
+ <div class="card"><h2>📈 Zufall & Gesetz der großen Zahlen</h2><p>Je mehr Versuche, desto näher an der theoretischen Wahrscheinlichkeit.</p></div>
+</div>
+
+<div id="rechnen" class="page">
+ <div class="grid">
+  <div class="card"><h3>Relative Häufigkeit</h3><p id="rq1"></p><input id="ra1" type="number" step="0.01"><br><button class="btn" onclick="checkR1()">Prüfen</button><div id="rf1"></div></div>
+  <div class="card"><h3>Mittelwert</h3><p id="rq2"></p><input id="ra2" type="number" step="0.01"><br><button class="btn" onclick="checkR2()">Prüfen</button><div id="rf2"></div></div>
+  <div class="card"><h3>Median</h3><p id="rq3"></p><input id="ra3" type="number" step="0.5"><br><button class="btn" onclick="checkR3()">Prüfen</button><div id="rf3"></div></div>
+  <div class="card"><h3>Pfadregel</h3><p id="rq4"></p><input id="ra4" type="number" step="0.01"><br><button class="btn" onclick="checkR4()">Prüfen</button><div id="rf4"></div></div>
+ </div>
+ <button class="btn" onclick="newRechnen()">🔄 Neue Aufgaben</button>
+</div>
+
+<div id="quiz" class="page">
+ <div class="card"><h2>Quiz</h2><p id="quizQ"></p><button class="btn" onclick="quizAns(true)">Richtig</button> <button class="btn alt" onclick="quizAns(false)">Falsch</button><p id="quizF"></p></div>
+</div>
+
+<div id="challenge" class="page">
+ <div class="card">
+  <h2>🔥 Klassenarbeits‑Challenge</h2>
+  <p>10 Aufgaben – Zeit läuft – Punkte zählen.</p>
+
+  <!-- Start-Screen -->
+  <div id="ch-start">
+   <button class="btn" onclick="startChallenge()">▶ Challenge starten</button>
+  </div>
+
+  <!-- Spiel-Screen -->
+  <div id="ch-game" style="display:none">
+   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem">
+    <span id="ch-aufg" style="font-weight:700;color:var(--muted)">Aufgabe 1 / 10</span>
+    <span id="ch-timer" style="font-weight:700;font-size:1.3rem;color:var(--red)">⏱ 30s</span>
+    <span id="ch-punkte" style="font-weight:700;color:var(--green)">Punkte: 0</span>
+   </div>
+   <div class="progress" style="margin-bottom:1.2rem"><div class="progress-bar" id="bar"></div></div>
+   <p id="ch-frage" style="font-size:1.1rem;font-weight:600;margin-bottom:1rem"></p>
+   <div id="ch-antworten" style="display:flex;flex-direction:column;gap:.6rem"></div>
+   <p id="ch-feedback" style="margin-top:.8rem;font-weight:700;min-height:1.4rem"></p>
+  </div>
+
+  <!-- Ergebnis-Screen -->
+  <div id="ch-result" style="display:none;text-align:center">
+   <h3 id="ch-score-title"></h3>
+   <p id="ch-score-text"></p>
+   <button class="btn" onclick="startChallenge()">🔄 Nochmal</button>
+  </div>
+ </div>
+</div>
+
+<script>
+// Cache DOM references once at startup
+const $ = id => document.getElementById(id);
+const pages = document.querySelectorAll('.page');
+const navBtns = document.querySelectorAll('.nav-links button');
+
+function go(id, cardEl) {
+  pages.forEach(p => p.classList.remove('active'));
+  navBtns.forEach(b => b.classList.remove('active'));
+  $(id).classList.add('active');
+  // Mark active nav button
+  const match = [...navBtns].find(b => b.getAttribute('onclick') && b.getAttribute('onclick').includes("'" + id + "'"));
+  if (match) match.classList.add('active');
+  else if (event && event.target && event.target.closest('.nav-links')) event.target.classList.add('active');
+}
+
+function goMobile(id) {
+  pages.forEach(p => p.classList.remove('active'));
+  navBtns.forEach(b => b.classList.remove('active'));
+  $(id).classList.add('active');
+  const match = [...navBtns].find(b => b.getAttribute('onclick') && b.getAttribute('onclick').includes("'" + id + "'"));
+  if (match) match.classList.add('active');
+  $('mobileMenu').classList.remove('open');
+  $('mobileMenu').previousElementSibling.querySelector('.hamburger').classList.remove('open');
+}
+
+function toggleMenu() {
+  const menu = $('mobileMenu');
+  const ham = menu.previousElementSibling.querySelector('.hamburger');
+  menu.classList.toggle('open');
+  ham.classList.toggle('open');
+}
+
+// Close menu on outside click
+document.addEventListener('click', e => {
+  const menu = $('mobileMenu');
+  if (menu.classList.contains('open') && !e.target.closest('header')) {
+    menu.classList.remove('open');
+    menu.previousElementSibling.querySelector('.hamburger').classList.remove('open');
+  }
+});
+
+// --- Lernen ---
+function calcStats() {
+  const a = $('calcData').value.split(',').map(Number).filter(n => !isNaN(n));
+  if (!a.length) return;
+  const m = (a.reduce((x, y) => x + y, 0) / a.length).toFixed(2);
+  a.sort((x, y) => x - y);
+  const half = a.length >> 1;
+  const med = a.length & 1 ? a[half] : ((a[half - 1] + a[half]) / 2).toFixed(2);
+  $('calcOut').innerHTML = `Mittelwert: <b>${m}</b><br>Median: <b>${med}</b>`;
+}
+
+// --- Simulation ---
+function simDice() {
+  const canvas = $('dice');
+  const c = canvas.getContext('2d');
+  const r = new Uint16Array(6);
+  let i = 0;
+  const t = setInterval(() => {
+    r[Math.random() * 6 | 0]++;
+    c.clearRect(0, 0, 520, 240);
+    for (let j = 0; j < 6; j++) {
+      const h = r[j] * 0.2;
+      c.fillStyle = '#1a56db';
+      c.fillRect(60 + j * 70, 220 - h, 50, h);
+      c.fillText(j + 1, 85 + j * 70, 235);
+    }
+    if (++i >= 1000) clearInterval(t);
+  }, 5);
+}
+
+// --- Rechnen ---
+let rh, rn, rm, med, p;
+const rnd = (a, b) => (Math.random() * (b - a + 1) | 0) + a;
+
+function newRechnen() {
+  rh = rnd(3, 40);
+  rn = rnd(40, 200);
+  $('rq1').textContent = `${rh} Erfolge bei ${rn} Versuchen. Berechne f.`;
+
+  const a = Array.from({length: 7}, () => rnd(1, 50));
+  rm = (a.reduce((x, y) => x + y, 0) / a.length).toFixed(2);
+  $('rq2').textContent = `Mittelwert von: ${a.join(', ')}`;
+
+  a.sort((x, y) => x - y);
+  med = a.length & 1 ? a[3] : (a[2] + a[3]) / 2;
+  $('rq3').textContent = `Median von: ${a.join(', ')}`;
+
+  const x = rnd(2, 9), y = rnd(2, 9);
+  p = ((x / 10) * (y / 10)).toFixed(2);
+  $('rq4').textContent = `P(A)=${x}/10 und P(B|A)=${y}/10`;
+}
+
+function out(id, a, u) {
+  const f = $(id);
+  const ok = Math.abs(a - u) < 0.05;
+  f.textContent = ok ? '✅ Richtig' : '❌ ' + a;
+  f.className = 'feedback ' + (ok ? 'ok' : 'err');
+}
+
+function checkR1() { out('rf1', (rh / rn).toFixed(2), $('ra1').value); }
+function checkR2() { out('rf2', rm, $('ra2').value); }
+function checkR3() { out('rf3', med, $('ra3').value); }
+function checkR4() { out('rf4', p, $('ra4').value); }
+
+newRechnen();
+
+// --- Quiz ---
+const quiz = [
+  {q: 'Die relative Häufigkeit liegt zwischen 0 und 1.', a: true},
+  {q: 'Der Median ist immer der Durchschnitt.', a: false}
+];
+let qi = 0;
+const quizQ = $('quizQ');
+const quizF = $('quizF');
+
+function quizAns(u) {
+  quizF.textContent = u === quiz[qi].a ? '✅ Richtig' : '❌ Falsch';
+  qi = (qi + 1) % quiz.length;
+  quizQ.textContent = quiz[qi].q;
+}
+quizQ.textContent = quiz[0].q;
+
+// --- Challenge ---
+let chTimer, chSekunden, chIndex, chPunkte, chFragen;
+
+function genChFragen() {
+  const fragen = [];
+  for (let i = 0; i < 10; i++) {
+    const typ = i % 4;
+    if (typ === 0) {
+      const h = rnd(3,40), n = rnd(40,200);
+      const richtig = (h/n).toFixed(2);
+      const falsch1 = (h/n + 0.1).toFixed(2);
+      const falsch2 = (n/h).toFixed(2);
+      fragen.push({
+        frage: `${h} Erfolge bei ${n} Versuchen. Wie groß ist die relative Häufigkeit?`,
+        antworten: shuffle([richtig, falsch1, falsch2, (h/n - 0.05).toFixed(2)]),
+        richtig
+      });
+    } else if (typ === 1) {
+      const a = Array.from({length:5}, () => rnd(1,20));
+      const richtig = (a.reduce((x,y)=>x+y,0)/a.length).toFixed(1);
+      fragen.push({
+        frage: `Mittelwert von: ${a.join(', ')}`,
+        antworten: shuffle([richtig, (parseFloat(richtig)+1).toFixed(1), (parseFloat(richtig)-1).toFixed(1), (parseFloat(richtig)+2).toFixed(1)]),
+        richtig
+      });
+    } else if (typ === 2) {
+      const a = Array.from({length:5}, () => rnd(1,20)).sort((x,y)=>x-y);
+      const richtig = String(a[2]);
+      fragen.push({
+        frage: `Median von: ${a.join(', ')}`,
+        antworten: shuffle([richtig, String(a[1]), String(a[3]), String(a[0])]),
+        richtig
+      });
+    } else {
+      const x = rnd(2,8), y = rnd(2,8);
+      const richtig = ((x/10)*(y/10)).toFixed(2);
+      fragen.push({
+        frage: `P(A)=${x}/10, P(B|A)=${y}/10 – Pfadwahrscheinlichkeit P(A∩B)?`,
+        antworten: shuffle([richtig, ((x/10)+(y/10)).toFixed(2), (x/10).toFixed(2), (y/10).toFixed(2)]),
+        richtig
+      });
+    }
+  }
+  return fragen;
+}
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.random() * (i+1) | 0;
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function startChallenge() {
+  chIndex = 0; chPunkte = 0;
+  chFragen = genChFragen();
+  $('ch-start').style.display = 'none';
+  $('ch-result').style.display = 'none';
+  $('ch-game').style.display = 'block';
+  zeigeChFrage();
+}
+
+function zeigeChFrage() {
+  if (chIndex >= chFragen.length) { endChallenge(); return; }
+  const f = chFragen[chIndex];
+  $('ch-aufg').textContent = `Aufgabe ${chIndex+1} / ${chFragen.length}`;
+  $('ch-punkte').textContent = `Punkte: ${chPunkte}`;
+  $('bar').style.width = (chIndex / chFragen.length * 100) + '%';
+  $('ch-frage').textContent = f.frage;
+  $('ch-feedback').textContent = '';
+
+  const cont = $('ch-antworten');
+  cont.innerHTML = '';
+  f.antworten.forEach(a => {
+    const btn = document.createElement('button');
+    btn.className = 'btn alt';
+    btn.textContent = a;
+    btn.onclick = () => waehleAntwort(a, btn);
+    cont.appendChild(btn);
+  });
+
+  chSekunden = 30;
+  $('ch-timer').textContent = `⏱ ${chSekunden}s`;
+  clearInterval(chTimer);
+  chTimer = setInterval(() => {
+    chSekunden--;
+    $('ch-timer').textContent = `⏱ ${chSekunden}s`;
+    if (chSekunden <= 0) { clearInterval(chTimer); zeitAbgelaufen(); }
+  }, 1000);
+}
+
+function waehleAntwort(antwort, btn) {
+  clearInterval(chTimer);
+  const richtig = chFragen[chIndex].richtig;
+  const btns = $('ch-antworten').querySelectorAll('button');
+  btns.forEach(b => {
+    b.disabled = true;
+    if (b.textContent === richtig) b.style.background = 'var(--green)';
+  });
+  if (antwort === richtig) {
+    chPunkte += Math.max(1, chSekunden);
+    $('ch-feedback').textContent = '✅ Richtig! +' + Math.max(1, chSekunden) + ' Punkte';
+    $('ch-feedback').style.color = 'var(--green)';
+  } else {
+    btn.style.background = 'var(--red)';
+    $('ch-feedback').textContent = '❌ Falsch! Richtig: ' + richtig;
+    $('ch-feedback').style.color = 'var(--red)';
+  }
+  chIndex++;
+  setTimeout(zeigeChFrage, 1200);
+}
+
+function zeitAbgelaufen() {
+  const richtig = chFragen[chIndex].richtig;
+  $('ch-antworten').querySelectorAll('button').forEach(b => {
+    b.disabled = true;
+    if (b.textContent === richtig) b.style.background = 'var(--green)';
+  });
+  $('ch-feedback').textContent = '⏰ Zeit! Richtig wäre: ' + richtig;
+  $('ch-feedback').style.color = 'var(--yellow)';
+  chIndex++;
+  setTimeout(zeigeChFrage, 1400);
+}
+
+function endChallenge() {
+  clearInterval(chTimer);
+  $('ch-game').style.display = 'none';
+  $('ch-result').style.display = 'block';
+  $('bar').style.width = '100%';
+  const max = chFragen.length * 30;
+  const pct = Math.round(chPunkte / max * 100);
+  const note = pct >= 87 ? '🏆 Sehr gut!' : pct >= 75 ? '👍 Gut!' : pct >= 50 ? '😐 Befriedigend' : '📚 Weiter üben!';
+  $('ch-score-title').textContent = `${note} ${chPunkte} von max. ${max} Punkten`;
+  $('ch-score-text').textContent = `Das entspricht ca. ${pct}% – ${pct >= 50 ? 'bestanden ✅' : 'nicht bestanden ❌'}`;
+}
+</script>
+</body>
+</html>
