@@ -22,6 +22,7 @@
    <button onclick="go('rechnen')">Rechenaufgaben</button>
    <button onclick="go('quiz')">Quiz</button>
    <button onclick="go('challenge')">Challenge</button>
+   <button onclick="go('imprint')">Impressum</button>
   </div>
   <div class="nav-right">
    <button onclick="document.body.classList.toggle('dark')" aria-label="Dark Mode">🌙</button>
@@ -36,6 +37,7 @@
   <button onclick="goMobile('rechnen')">🧮 Rechenaufgaben</button>
   <button onclick="goMobile('quiz')">🧠 Quiz</button>
   <button onclick="goMobile('challenge')">🔥 Challenge</button>
+  <button onclick="goMobile('imprint')">📄 Impressum</button>
  </div>
 </header>
 
@@ -113,6 +115,40 @@
   </div>
  </div>
 </div>
+
+<div id="imprint" class="page">
+  <div class="page-header">
+    <h1>Impressum</h1>
+    <p>Angaben gemäß Schulprojekt · 10. Klasse Mathematik</p>
+  </div>
+  <div class="imprint-card">
+    <h2>Erstellt von</h2>
+    <div class="imprint-row"><div class="imprint-label">Name</div><div class="imprint-val"><b>Daris Beckovic</b></div></div>
+    <div class="imprint-row"><div class="imprint-label">Name</div><div class="imprint-val"><b>Gabriel Gusmiz</b></div></div>
+    <div class="imprint-row"><div class="imprint-label">Klasse</div><div class="imprint-val">10. Klasse</div></div>
+    <div class="imprint-row"><div class="imprint-label">Fach</div><div class="imprint-val">Mathematik</div></div>
+    <div class="imprint-row"><div class="imprint-label">Aufgabe</div><div class="imprint-val">Lernwebsite zu den Themen Statistik und Wahrscheinlichkeit (Häufigkeit, Mittelwert, Median, Baumdiagramme, Pfadregeln)</div></div>
+  </div>
+  <div class="imprint-card">
+    <h2>KI-Quellenangabe (gemäß Arbeitsauftrag)</h2>
+    <div class="ki-block">
+      <div class="imprint-row"><div class="imprint-label">Name des KI-Tools</div><div class="imprint-val">Claude (<a href="http://claude.ai" target="_blank">claude.ai</a>) – Anthropic</div></div>
+      <div class="imprint-row"><div class="imprint-label">Version / Modell</div><div class="imprint-val">Claude Sonnet 4.6</div></div>
+      <div class="imprint-row"><div class="imprint-label">Datum der Nutzung</div><div class="imprint-val">16. April 2026</div></div>
+      <div class="imprint-row"><div class="imprint-label">Art der Nutzung</div><div class="imprint-val">Erstellung der gesamten Lernwebsite – Struktur, Erklärungen, Formeln, Beispiele, Baumdiagramme und Aufgabengenerator</div></div>
+      <div class="imprint-row"><div class="imprint-label">Prompt (Beispiel)</div><div class="imprint-val">„Erstelle eine Lernwebsite für die 10. Klasse über Statistik und Wahrscheinlichkeit mit Erklärungen zu Häufigkeit, Median, Mittelwert, Baumdiagrammen und Pfadregeln sowie zufällig generierten Übungsaufgaben."</div></div>
+    </div>
+  </div>
+  <div class="imprint-card">
+    <h2>Haftungsausschluss</h2>
+    <p style="font-size:15px;line-height:1.7;color:#334155">Diese Website wurde im Rahmen eines Schulprojektes der 10. Klasse erstellt. Die Inhalte wurden mithilfe von KI generiert und anschließend von den Autoren geprüft und angepasst. Für die vollständige inhaltliche Richtigkeit wird keine Gewähr übernommen. Lehrpersonen beachten bitte den entsprechenden Hinweis im Quellenverzeichnis.</p>
+    <p style="font-size:14px;color:var(--muted);margin-top:1rem">Bearbeitet durch Daris Beckovic &amp; Gabriel Gusmiz · Datum: 16.04.2026</p>
+  </div>
+</div>
+
+<footer>
+  Statistik 10 · Erstellt von Daris Beckovic &amp; Gabriel Gusmiz · 10. Klasse · 2026
+</footer>
 
 <script>
 // Cache DOM references once at startup
